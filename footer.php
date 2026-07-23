@@ -26,7 +26,6 @@
 
     <!-- Copyright + botão discreto de acesso ao painel -->
     <div class="footer-bottom">
-      <p class="footer-copy">&copy; <?php echo date('Y'); ?> Barbearia Adrian Souza &mdash; Todos os direitos reservados.</p>
       <a href="login.php" class="footer-admin-btn">
         <i class="fas fa-lock"></i> Área Admin
       </a>
