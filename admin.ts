@@ -1,11 +1,5 @@
-// @ts-ignore
-declare const bootstrap: any;
-// ============================================================
-// admin.ts — Dashboard Admin Barbearia Adrian Souza
-// TypeScript com interfaces, reduce, filter, map, edge cases
-// ============================================================
 
-// ── INTERFACES (tipagem estrita, sem `any`) ───────────────────────────────────
+declare const bootstrap: any;
 
 interface Agendamento {
   id: number;

@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['entrar'])) {
 
 if (!adminAutenticado()):
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>

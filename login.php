@@ -1,28 +1,29 @@
 <?php
 // ============================================================
-// login.php — Tela de login do painel simples
+// login.php — Login do painel simples (painel.php)
 // ============================================================
-// Acessado pelo botão "Área Admin" no rodapé do site.
-// Sempre pede senha ao entrar — a sessão é destruída ao sair.
-// Credenciais: usuário = admin | senha = 1234
+// IMPORTANTE: Sempre destrói a sessão ao carregar esta página.
+// Assim, toda vez que o usuário acessar login.php (inclusive
+// vindo do botão "Sair"), precisará digitar a senha novamente.
 
 session_start();
 
-// Se já estiver logado, redireciona para o painel
-if (!empty($_SESSION['admin_logado'])) {
-    header('Location: painel.php');
-    exit;
-}
+// Destrói qualquer sessão existente ao entrar na página de login
+// Isso garante que SEMPRE será pedida a senha
+session_unset();
+session_destroy();
+
+// Inicia uma nova sessão limpa
+session_start();
 
 $erro = '';
 
-// Verifica o formulário ao enviar
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = trim($_POST['usuario'] ?? '');
     $senha   = $_POST['senha']        ?? '';
 
     if ($usuario === 'admin' && $senha === '1234') {
-        session_regenerate_id(true);          // Evita session fixation
+        session_regenerate_id(true);
         $_SESSION['admin_logado'] = true;
         header('Location: painel.php');
         exit;
@@ -47,23 +48,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <main class="login-card">
 
     <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
-
     <p class="mini-texto">ÁREA RESTRITA</p>
     <h1>Painel Admin</h1>
     <p class="login-subtitulo">Entre com suas credenciais para gerenciar os agendamentos.</p>
 
-    <!-- Erro de login -->
     <?php if ($erro): ?>
       <div class="alert alert-danger py-2"><?php echo htmlspecialchars($erro); ?></div>
     <?php endif; ?>
 
-    <!-- Formulário -->
     <form method="post" class="login-form">
       <label for="usuario">Usuário</label>
-      <input type="text" id="usuario" name="usuario" autocomplete="username" required placeholder="admin">
+      <input type="text" id="usuario" name="usuario" autocomplete="off" required placeholder="admin">
 
       <label for="senha">Senha</label>
-      <input type="password" id="senha" name="senha" autocomplete="current-password" required placeholder="••••">
+      <input type="password" id="senha" name="senha" autocomplete="off" required placeholder="••••">
 
       <button type="submit" class="btn btn-gold w-100 mt-3">
         <i class="fa-solid fa-right-to-bracket me-2"></i>Entrar

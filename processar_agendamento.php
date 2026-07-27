@@ -1,11 +1,5 @@
 <?php
-// ============================================================
-// processar_agendamento.php — Salva um agendamento no banco
-// ============================================================
-// Chamado via fetch() do formulário em index.php.
-// Sempre responde em JSON: { sucesso: bool, mensagem: string }
-
-ob_start();                        // Evita HTML acidental na resposta JSON
+ob_start();                       
 ini_set('display_errors', 0);
 header('Content-Type: application/json; charset=utf-8');
 

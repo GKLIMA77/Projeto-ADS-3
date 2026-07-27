@@ -106,20 +106,45 @@ h1, h2, h3, h4, h5, h6,
 .btn-principal:hover { transform: translateY(-5px); background: #d4ac00; color: #04101a; }
 
 
-/* ── HERO ────────────────────────────────────────────────────── */
+/* ── HERO COM VÍDEO ──────────────────────────────────────────── */
 
 .hero {
     min-height: 100vh;
     display: flex;
     align-items: center;
     padding: 120px 8%;
-    background:
-        linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.84)),
-        url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1600')
-        center/cover no-repeat;
+    position: relative;   /* necessário para posicionar o vídeo atrás */
+    overflow: hidden;
 }
 
-.hero-content { max-width: 680px; }
+/* Vídeo de fundo: ocupa todo o hero */
+.hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    z-index: 0;
+}
+
+/* Overlay escuro sobre o vídeo para o texto ficar legível */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    z-index: 1;
+}
+
+/* Conteúdo fica acima do vídeo e do overlay */
+.hero-content {
+    max-width: 680px;
+    position: relative;
+    z-index: 2;
+}
 
 .mini-texto {
     color: #8f9cab;
@@ -927,6 +952,22 @@ footer {
 }
 
 .footer-admin-btn:hover { color: #f3c800; border-color: #f3c800; }
+
+/* @ do Instagram visível no rodapé */
+.footer-insta {
+    font-size: 13px;
+    color: #9db0c0;
+    margin: 0;
+}
+
+.footer-insta a {
+    color: #f3c800;
+    text-decoration: none;
+    font-weight: 700;
+    transition: .3s;
+}
+
+.footer-insta a:hover { color: #ffffff; }
 
 
 /* ── REMOVE FUNDO BRANCO DO BOOTSTRAP ──────────────────────── */

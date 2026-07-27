@@ -1,10 +1,10 @@
-// ── ESTADO GLOBAL ─────────────────────────────────────────────────────────────
+//  ESTADO GLOBAL 
 let agendamentosCache = [];
 let servicosCache = [];
 let filtroStatusAtual = "";
 let categoriasCache = [];
 let produtosCache = [];
-// ── HELPERS ───────────────────────────────────────────────────────────────────
+//  HELPERS
 function mostrarLoading(ativo) {
     const el = document.getElementById("loading-overlay");
     if (!el)
@@ -35,7 +35,7 @@ function badgeStatus(status) {
     const cor = (_a = mapa[status]) !== null && _a !== void 0 ? _a : "secondary";
     return `<span class="badge bg-${cor}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
 }
-// ── BUSCA GENÉRICA COM async/await + try/catch ────────────────────────────────
+//  BUSCA GENÉRICA COM async/await + try/catch
 async function buscarDados(endpoint, params = {}) {
     var _a;
     try {
