@@ -113,6 +113,7 @@ if (!adminAutenticado()):
         <button class="tab-btn" data-filtro="confirmado">Confirmados</button>
         <button class="tab-btn" data-filtro="cancelado">Cancelados</button>
       </div>
+      <div id="ag-faturamento-total" class="mb-3 text-warning fw-bold" style="font-size:15px;"></div>
       <div class="table-responsive">
         <table class="table table-dark table-hover">
           <thead><tr><th>#</th><th>Cliente</th><th>Serviço</th><th>Data/Hora</th><th>Status</th><th>Ações</th></tr></thead>

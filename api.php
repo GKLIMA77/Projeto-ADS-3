@@ -32,6 +32,9 @@ function texto($valor, $padrao = '') {
 
 try {
     switch ($acao) {
+
+        // ── DASHBOARD ────────────────────────────────────────────────────────────
+
         // CALL da Stored Procedure otimizada
         case 'indicadores':
             $res = $conexao->query("CALL sp_obter_indicadores_dashboard()");
@@ -50,15 +53,17 @@ try {
             $ranking = [];
             while ($linha = $res->fetch_assoc()) {
                 $ranking[] = [
-                    'id' => (int)$linha['id'],
-                    'nome' => $linha['nome'],
-                    'preco' => (float)$linha['preco'],
+                    'id'                 => (int)$linha['id'],
+                    'nome'               => $linha['nome'],
+                    'preco'              => (float)$linha['preco'],
                     'total_agendamentos' => (int)$linha['total_agendamentos'],
-                    'faturamento' => (float)$linha['faturamento_gerado']
+                    'faturamento'        => (float)$linha['faturamento_gerado']
                 ];
             }
             responder(true, 'Ranking obtido', $ranking);
             break;
+
+        // ── AGENDAMENTOS ─────────────────────────────────────────────────────────
 
         // Leitura usando a View de Centralização
         case 'agendamentos':
@@ -68,32 +73,65 @@ try {
                 $sql .= " WHERE status = '" . $conexao->real_escape_string($statusFiltro) . "'";
             }
             $sql .= " ORDER BY data_hora DESC";
-            
+
             $res = $conexao->query($sql);
             $lista = [];
             while ($linha = $res->fetch_assoc()) {
                 $lista[] = [
-                    'id' => (int)$linha['agendamento_id'],
+                    'id'           => (int)$linha['agendamento_id'],
                     'cliente_nome' => $linha['cliente_nome'],
                     'servico_nome' => $linha['servico_nome'],
-                    'servico_preco' => (float)$linha['servico_preco'],
-                    'data_hora' => $linha['data_hora'],
-                    'status' => $linha['status']
+                    'servico_preco'=> (float)$linha['servico_preco'],
+                    'data_hora'    => $linha['data_hora'],
+                    'status'       => $linha['status']
                 ];
             }
             responder(true, 'Lista de agendamentos', $lista);
             break;
 
-        // CRUD SERVIÇOS: Regra de exclusão tratada com mensagem clara
-        case 'excluir_servico':
-            $id = (int)($input['id'] ?? 0);
-            $check = $conexao->query("SELECT id FROM agendamentos WHERE servico_id = $id");
-            if ($check->num_rows > 0) {
-                responder(false, 'Não é possível excluir este serviço pois existem agendamentos ativos vinculados a ele!');
+        case 'criar_agendamento':
+            $nome      = texto($input['nome'] ?? '');
+            $servicoId = (int)($input['servico_id'] ?? 0);
+            $dataHora  = texto($input['data_hora'] ?? '');
+            $status    = texto($input['status'] ?? 'pendente');
+            if ($nome === '' || $servicoId <= 0 || $dataHora === '') {
+                responder(false, 'Preencha todos os campos do agendamento.');
             }
-            $conexao->query("DELETE FROM servicos WHERE id = $id");
-            responder(true, 'Serviço removido com sucesso.');
+            if (!in_array($status, ['pendente', 'confirmado', 'cancelado'], true)) {
+                $status = 'pendente';
+            }
+            $stmt = $conexao->prepare('INSERT INTO agendamentos (cliente_nome, servico_id, data_hora, status) VALUES (?, ?, ?, ?)');
+            $stmt->bind_param('siss', $nome, $servicoId, $dataHora, $status);
+            if (!$stmt->execute()) responder(false, 'Erro ao criar agendamento: ' . $stmt->error);
+            responder(true, 'Agendamento criado com sucesso.');
             break;
+
+        case 'editar_agendamento':
+            $id        = (int)($input['id'] ?? 0);
+            $nome      = texto($input['nome'] ?? '');
+            $servicoId = (int)($input['servico_id'] ?? 0);
+            $dataHora  = texto($input['data_hora'] ?? '');
+            $status    = texto($input['status'] ?? 'pendente');
+            if ($id <= 0 || $nome === '' || $servicoId <= 0 || $dataHora === '') {
+                responder(false, 'Dados inválidos para edição.');
+            }
+            if (!in_array($status, ['pendente', 'confirmado', 'cancelado'], true)) {
+                $status = 'pendente';
+            }
+            $stmt = $conexao->prepare('UPDATE agendamentos SET cliente_nome = ?, servico_id = ?, data_hora = ?, status = ? WHERE id = ?');
+            $stmt->bind_param('sissi', $nome, $servicoId, $dataHora, $status, $id);
+            if (!$stmt->execute()) responder(false, 'Erro ao editar agendamento: ' . $stmt->error);
+            responder(true, 'Agendamento atualizado com sucesso.');
+            break;
+
+        case 'excluir_agendamento':
+            $id = (int)($input['id'] ?? 0);
+            if ($id <= 0) responder(false, 'ID inválido.');
+            $conexao->query("DELETE FROM agendamentos WHERE id = $id");
+            responder(true, 'Agendamento excluído com sucesso.');
+            break;
+
+        // ── CLIENTES ─────────────────────────────────────────────────────────────
 
         case 'clientes':
             $res = $conexao->query("SELECT * FROM clientes ORDER BY nome ASC");
@@ -104,6 +142,46 @@ try {
             responder(true, 'Lista de clientes', $clientes);
             break;
 
+        case 'criar_cliente':
+            $nome     = texto($input['nome'] ?? '');
+            $telefone = texto($input['telefone'] ?? '');
+            $email    = texto($input['email'] ?? '');
+            if ($nome === '') responder(false, 'Informe o nome do cliente.');
+            $stmt = $conexao->prepare('INSERT INTO clientes (nome, telefone, email) VALUES (?, ?, ?)');
+            $stmt->bind_param('sss', $nome, $telefone, $email);
+            if (!$stmt->execute()) responder(false, 'Erro ao criar cliente: ' . $stmt->error);
+            responder(true, 'Cliente criado com sucesso.');
+            break;
+
+        case 'editar_cliente':
+            $id       = (int)($input['id'] ?? 0);
+            $nome     = texto($input['nome'] ?? '');
+            $telefone = texto($input['telefone'] ?? '');
+            $email    = texto($input['email'] ?? '');
+            if ($id <= 0 || $nome === '') responder(false, 'Dados inválidos para edição.');
+            $stmt = $conexao->prepare('UPDATE clientes SET nome = ?, telefone = ?, email = ? WHERE id = ?');
+            $stmt->bind_param('sssi', $nome, $telefone, $email, $id);
+            if (!$stmt->execute()) responder(false, 'Erro ao editar cliente: ' . $stmt->error);
+            responder(true, 'Cliente atualizado com sucesso.');
+            break;
+
+        case 'excluir_cliente':
+            $id = (int)($input['id'] ?? 0);
+            if ($id <= 0) responder(false, 'ID inválido.');
+            // Regra de exclusão: impede exclusão se houver agendamentos vinculados pelo nome
+            $nomeCliente = $conexao->query("SELECT nome FROM clientes WHERE id = $id")->fetch_assoc()['nome'] ?? '';
+            if ($nomeCliente !== '') {
+                $check = $conexao->query("SELECT id FROM agendamentos WHERE cliente_nome = '" . $conexao->real_escape_string($nomeCliente) . "' LIMIT 1");
+                if ($check && $check->num_rows > 0) {
+                    responder(false, 'Não é possível excluir este cliente pois existem agendamentos vinculados a ele!');
+                }
+            }
+            $conexao->query("DELETE FROM clientes WHERE id = $id");
+            responder(true, 'Cliente excluído com sucesso.');
+            break;
+
+        // ── SERVIÇOS ─────────────────────────────────────────────────────────────
+
         case 'servicos':
             $res = $conexao->query("SELECT * FROM servicos ORDER BY nome ASC");
             $servicos = [];
@@ -112,6 +190,42 @@ try {
             }
             responder(true, 'Lista de serviços', $servicos);
             break;
+
+        case 'criar_servico':
+            $nome  = texto($input['nome'] ?? '');
+            $preco = (float)($input['preco'] ?? 0);
+            $ativo = (int)($input['ativo'] ?? 1);
+            if ($nome === '' || $preco <= 0) responder(false, 'Informe nome e preço válido.');
+            $stmt = $conexao->prepare('INSERT INTO servicos (nome, preco, ativo) VALUES (?, ?, ?)');
+            $stmt->bind_param('sdi', $nome, $preco, $ativo);
+            if (!$stmt->execute()) responder(false, 'Erro ao criar serviço: ' . $stmt->error);
+            responder(true, 'Serviço criado com sucesso.');
+            break;
+
+        case 'editar_servico':
+            $id    = (int)($input['id'] ?? 0);
+            $nome  = texto($input['nome'] ?? '');
+            $preco = (float)($input['preco'] ?? 0);
+            $ativo = (int)($input['ativo'] ?? 1);
+            if ($id <= 0 || $nome === '' || $preco <= 0) responder(false, 'Dados inválidos para edição.');
+            $stmt = $conexao->prepare('UPDATE servicos SET nome = ?, preco = ?, ativo = ? WHERE id = ?');
+            $stmt->bind_param('sdii', $nome, $preco, $ativo, $id);
+            if (!$stmt->execute()) responder(false, 'Erro ao editar serviço: ' . $stmt->error);
+            responder(true, 'Serviço atualizado com sucesso.');
+            break;
+
+        // Regra de exclusão com mensagem clara
+        case 'excluir_servico':
+            $id = (int)($input['id'] ?? 0);
+            $check = $conexao->query("SELECT id FROM agendamentos WHERE servico_id = $id");
+            if ($check->num_rows > 0) {
+                responder(false, 'Não é possível excluir este serviço pois existem agendamentos ativos vinculados a ele!');
+            }
+            $conexao->query("DELETE FROM servicos WHERE id = $id");
+            responder(true, 'Serviço removido com sucesso.');
+            break;
+
+        // ── LOJA: CATEGORIAS E PRODUTOS ──────────────────────────────────────────
 
         case 'categorias':
             $res = $conexao->query("SELECT * FROM categorias ORDER BY nome ASC");
@@ -135,10 +249,12 @@ try {
             break;
 
         case 'salvar_categoria':
-            $id = (int)($input['id'] ?? 0);
-            $nome = texto($input['nome']);
+            $id     = (int)($input['id'] ?? 0);
+            $nome   = texto($input['nome']);
             $status = texto($input['status'], 'pendente');
-            if ($nome === '' || !in_array($status, ['pendente', 'aprovada', 'cancelada'], true)) responder(false, 'Informe uma categoria e um status válido.');
+            if ($nome === '' || !in_array($status, ['pendente', 'aprovada', 'cancelada'], true)) {
+                responder(false, 'Informe uma categoria e um status válido.');
+            }
             if ($id > 0) {
                 $stmt = $conexao->prepare('UPDATE categorias SET nome = ?, status = ? WHERE id = ?');
                 $stmt->bind_param('ssi', $nome, $status, $id);
@@ -151,22 +267,26 @@ try {
             break;
 
         case 'excluir_categoria':
-            $id = (int)($input['id'] ?? 0);
+            $id    = (int)($input['id'] ?? 0);
             $check = $conexao->query("SELECT id FROM produtos WHERE categoria_id = $id LIMIT 1");
-            if ($check && $check->num_rows > 0) responder(false, 'Exclua ou mova os produtos desta categoria antes de removê-la.');
+            if ($check && $check->num_rows > 0) {
+                responder(false, 'Exclua ou mova os produtos desta categoria antes de removê-la.');
+            }
             $conexao->query("DELETE FROM categorias WHERE id = $id");
             responder(true, 'Categoria excluída.');
             break;
 
         case 'salvar_produto':
-            $id = (int)($input['id'] ?? 0);
+            $id          = (int)($input['id'] ?? 0);
             $categoriaId = (int)($input['categoria_id'] ?? 0);
-            $nome = texto($input['nome']);
-            $descricao = texto($input['descricao']);
-            $preco = (float)($input['preco'] ?? 0);
-            $imagem = texto($input['imagem']);
-            $status = texto($input['status'], 'pendente');
-            if ($categoriaId <= 0 || $nome === '' || $preco <= 0 || !in_array($status, ['pendente', 'aprovado', 'cancelado'], true)) responder(false, 'Preencha nome, categoria, preço e status válido.');
+            $nome        = texto($input['nome']);
+            $descricao   = texto($input['descricao']);
+            $preco       = (float)($input['preco'] ?? 0);
+            $imagem      = texto($input['imagem']);
+            $status      = texto($input['status'], 'pendente');
+            if ($categoriaId <= 0 || $nome === '' || $preco <= 0 || !in_array($status, ['pendente', 'aprovado', 'cancelado'], true)) {
+                responder(false, 'Preencha nome, categoria, preço e status válido.');
+            }
             if ($id > 0) {
                 $stmt = $conexao->prepare('UPDATE produtos SET categoria_id = ?, nome = ?, descricao = ?, preco = ?, imagem = ?, status = ? WHERE id = ?');
                 $stmt->bind_param('issdssi', $categoriaId, $nome, $descricao, $preco, $imagem, $status, $id);
