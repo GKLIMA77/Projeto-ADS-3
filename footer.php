@@ -16,10 +16,14 @@
         <i class="fa-brands fa-instagram"></i>
       </a>
 
-      <!-- WhatsApp -->
-      <a href="https://wa.me/5544997306220" target="_blank" rel="noopener" aria-label="WhatsApp" class="footer-rede footer-rede-whatsapp">
-        <i class="fa-brands fa-whatsapp"></i>
-      </a>
+     <!-- WhatsApp -->
+<a href="https://wa.me/5544997306220?text=Olá!%20Gostaria%20de%20agendar%20um%20horário%20na%20barbearia.%20Poderia%20me%20informar%20os%20horários%20disponíveis%3F"
+   target="_blank"
+   rel="noopener"
+   aria-label="WhatsApp"
+   class="footer-rede footer-rede-whatsapp">
+    <i class="fa-brands fa-whatsapp"></i>
+</a>
 
       <!-- Facebook -->
       <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="footer-rede footer-rede-face">
