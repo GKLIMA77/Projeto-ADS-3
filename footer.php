@@ -31,7 +31,7 @@
     <!-- Instagram visível como texto -->
     <p class="footer-insta">
       <i class="fa-brands fa-instagram me-1"></i>
-      <a href="https://instagram.com/adrian_souza" target="_blank" rel="noopener">@souza_barbershopp
+      <a href="https://www.instagram.com/souza_barbershopp/" target="_blank" rel="noopener">@souza_barbershopp
 </a>
     </p>
 
