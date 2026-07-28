@@ -16,14 +16,10 @@
         <i class="fa-brands fa-instagram"></i>
       </a>
 
-     <!-- WhatsApp -->
-<a href="https://wa.me/5544997306220?text=Olá!%20Gostaria%20de%20agendar%20um%20horário%20na%20barbearia.%20Poderia%20me%20informar%20os%20horários%20disponíveis%3F"
-   target="_blank"
-   rel="noopener"
-   aria-label="WhatsApp"
-   class="footer-rede footer-rede-whatsapp">
-    <i class="fa-brands fa-whatsapp"></i>
-</a>
+      <!-- WhatsApp -->
+      <a href="https://wa.me/5544997306220" target="_blank" rel="noopener" aria-label="WhatsApp" class="footer-rede footer-rede-whatsapp">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
 
       <!-- Facebook -->
       <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="footer-rede footer-rede-face">
@@ -35,14 +31,14 @@
     <!-- Instagram visível como texto -->
     <p class="footer-insta">
       <i class="fa-brands fa-instagram me-1"></i>
-      <a href="https://www.instagram.com/souza_barbershopp/" target="_blank" rel="noopener">@souza_barbershopp
+      <a href="https://instagram.com/adrian_souza" target="_blank" rel="noopener">@souza_barbershopp
 </a>
     </p>
 
     <!-- Copyright + botão admin -->
     <div class="footer-bottom">
       <p class="footer-copy">&copy; <?php echo date('Y'); ?> Barbearia Adrian Souza &mdash; Todos os direitos reservados.</p>
-      <a href="login.php" class="footer-admin-btn">
+      <a href="admin.php" class="footer-admin-btn">
         <i class="fas fa-lock"></i> Área Admin
       </a>
     </div>
