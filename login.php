@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = trim($_POST['usuario'] ?? '');
     $senha   = $_POST['senha']        ?? '';
 
-    if ($usuario === 'admin' && $senha === '1234') {
+    if ($usuario === 'gabriel' && $senha === '1234') {
         session_regenerate_id(true);
         $_SESSION['admin_logado'] = true;
         header('Location: painel.php');
