@@ -1,4 +1,4 @@
-  // SVG da nova Logo com a tipografia exata e os 3 personagens Sanrio
+// SVG da nova Logo com a tipografia exata e os 3 personagens Sanrio
   const LOGO_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
     <circle cx="150" cy="150" r="142" fill="%23ffffff" stroke="%23111118" stroke-width="6"/>
     <text x="150" y="80" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="34" fill="%23111118" text-anchor="middle" letter-spacing="-0.5">Lumi Yumi</text>
@@ -112,9 +112,9 @@ document.getElementById('bebidasScroll').innerHTML = bebidas.map(b => `
                 tag: 'Chocolate Real'
             },
             {
-                cat: 'doces',
-                nome: 'Balas Azedas',
-                desc: 'Doces com visual de lançamento, bem conhecidos pelos posts da loja e pelo público que ama sabores bem diferentes.',
+                cat: 'chocolates',
+                nome: 'KitKat Senses Caramel Crisp',
+                desc: 'Linha especial importada de chocolates crocantes e recheados, queridinha do público que ama sabores diferentes.',
                 img: 'https://scontent-gru1-2.cdninstagram.com/v/t51.82787-15/722447671_17877485994670148_4753347098685957565_n.jpg?stp=dst-jpg_e35_s640x640_tt6&_nc_cat=103&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=inTTR4EHL1cQ7kNvwG8HnvG&_nc_oc=AdqohSAvEikB5pumhpW_oQO360YrdwyJ6wzjuLbZUu1_kQCVdv_kgWTw9D1qGBx-dzA&_nc_zt=23&_nc_ht=scontent-gru1-2.cdninstagram.com&_nc_gid=MixygwFXP-7VMN8_nPZLyw&_nc_ss=79689&oh=00_AQG6WHUNKYBV75ZLIa2-N3FBPgBRqmhyGDCu-SieSv5_sw&oe=6A744D21',
                 tag: 'Instagram Post'
             },
@@ -253,4 +253,3 @@ window.addEventListener('scroll', ()=>{
 // ─── INICIALIZAÇÃO ───
 renderProdutos();
 observeFadeUps();
-
